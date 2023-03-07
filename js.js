@@ -14,10 +14,13 @@ nickName: null,
 lastname: null,
 gender:"",
 house:"",
+bloodType:""
+
 }
 
-window.addEventListener("DOMContentLoaded", loadJSON);
 
+
+window.addEventListener("DOMContentLoaded", loadJSON);
 
 
 async function loadJSON() {
@@ -31,12 +34,12 @@ async function loadJSON() {
 
 
 
+
+
 function prepareObjects(jsonData) {
     allStudnets = jsonData.map(prepareObject);
 
-
-
-    console.table(allStudnets);
+    // console.table(allStudnets);
 
     // displayList();
 }
@@ -46,23 +49,55 @@ function prepareObjects(jsonData) {
 function prepareObject(jsonObject) {
     const student = Object.create(Student);
 
-    student.firstname = jsonObject.fullname;
+    const fullname = jsonObject.fullname.trimStart().toLowerCase();
+
+
+
+
+    const firstSpace = fullname.indexOf(" ");
+    const secondSpace = fullname.indexOf(" ", firstSpace +1);
+    const lastSpace = fullname.lastIndexOf(" ");
+    
+    
+    const firstname = fullname.substring(0, firstSpace);
+    const middlename = fullname.substring(firstSpace, secondSpace);
+    const lastname = fullname.substring(lastSpace);
+    
+
+
+    console.log(fullname)
+
 
     // const texts = jsonObject.fullname.split(" ");
-    // animal.name = texts[0];
-    // animal.desc = texts[2];
-    // animal.type = texts[3];
-    // animal.age = jsonObject.age;
 
+    // student.firstname = texts[0];
+    // student.middlename = texts[1];
+    // student.lastname = texts[2];
+
+   // for the console table 
+   // student.fullname =jsonObject.fullname;
+   //     student.gender = jsonObject.gender;
+   //     student.house = jsonObject.house;
+
+   // animal.age = jsonObject.age;
+
+    // trimName();
     return student;
 }
 
 
-function trimName(){
 
-student.firstname = jsonObject.trim; 
 
+function lowerCase (){
+
+
+
+
+    Student.fullname = jsonObject.toLowerCase();
 }
+
+
+
 
 
 
