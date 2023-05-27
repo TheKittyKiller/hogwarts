@@ -53,6 +53,18 @@ function findNicknames(fullname) {
     return []; // Empty array if no nicknames found
   }
   
+  const searchInput = document.getElementById("search-input");
+  searchInput.addEventListener("input", handleSearch);
+  
+  function handleSearch() {
+    const searchQuery = searchInput.value.toLowerCase().trim();
+    filteredStudents = allStudents.filter((student) => {
+      const fullName = student.firstname.toLowerCase() + " " + student.lastname.toLowerCase();
+      return fullName.includes(searchQuery);
+    });
+    displayData(filteredStudents);
+  }
+  
 
 function capitalizeFirstLetter(string) {
   if (string) {
@@ -129,6 +141,35 @@ function displayData(students) {
     });
   
     tableElement.appendChild(tableBody);
+  
+    // Update the count information
+    const houseCountElement = document.getElementById("house-count");
+    const displayedCountElement = document.getElementById("displayed-count");
+    const houseCounts = countStudentsByHouse(allStudents);
+    const displayedCount = students.length;
+  
+    houseCountElement.textContent = `Number of students in each house: ${formatHouseCounts(houseCounts)}`;
+    displayedCountElement.textContent = `Number of students currently displayed: ${displayedCount}`;
+  }
+  
+  function countStudentsByHouse(students) {
+    const houseCounts = {
+      Gryffindor: 0,
+      Hufflepuff: 0,
+      Ravenclaw: 0,
+      Slytherin: 0,
+    };
+  
+    students.forEach((student) => {
+      houseCounts[student.house]++;
+    });
+  
+    return houseCounts;
+  }
+  
+  function formatHouseCounts(houseCounts) {
+    const counts = Object.entries(houseCounts).map(([house, count]) => `${house}: ${count}`);
+    return counts.join(", ");
   }
   
 
