@@ -120,26 +120,31 @@ function capitalizeFirstLetter(string) {
 
 
 //putting the list on html
-
 function displayData(students) {
-  const listElement = document.getElementById("student-list");
-  listElement.innerHTML = ""; // Clear previous data
+    const listElement = document.getElementById("student-list");
+    listElement.innerHTML = ""; // Clear previous data
+  
+    students.forEach((student) => {
+      const listItem = document.createElement("li");
+  
+      let fullName = `${student.firstname} ${student.middlename} ${student.lastname}`;
+      if (student.nickname) {
+        fullName += ` (${student.nickname})`;
+      }
+  
+      const house = document.createElement("span");
+      house.textContent = ` House: ${student.house}`;
+      house.classList.add("house"); // Add a class for styling if desired
+  
+      listItem.textContent = fullName;
+      listItem.appendChild(house);
+      listElement.appendChild(listItem);
+    });
+  }
+  
 
-  students.forEach((student) => {
-    const listItem = document.createElement("li");
 
-    let fullName = `${student.firstname} ${student.middlename} ${student.lastname}`;
-    if (student.nickname) {
-      fullName += ` (${student.nickname})`;
-    }
-
-    listItem.textContent = fullName;
-    listElement.appendChild(listItem);
-  });
-}
-
-
-//sorting the data
+//sorting the
 
 function sortDataByFirstName() {
   cleanedData.sort((a, b) => a.firstname.localeCompare(b.firstname));
