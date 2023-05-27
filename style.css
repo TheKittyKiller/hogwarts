@@ -6,6 +6,11 @@ table {
   th, td {
     padding: 8px;
     border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+  
+  th:last-child, td:last-child {
+    border-right: none; /* Remove right border for last column */
   }
   
   th {
