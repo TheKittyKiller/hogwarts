@@ -3,11 +3,12 @@
 const url = "https://petlatkea.dk/2021/hogwarts/students.json";
 
 const Student = {
-  firstname: "",
-  lastname: "",
-  house: "",
-};
-
+    firstname: "",
+    lastname: "",
+    house: "",
+    nicknames: [] // Add nicknames property
+  };
+  
 let allStudents = [];
 let filteredStudents = [];
 let currentSort = {
@@ -15,26 +16,43 @@ let currentSort = {
   order: "asc",
 };
 
-
-
-
 async function fetchData() {
   try {
     const response = await fetch(url);
     const jsonData = await response.json();
     allStudents = jsonData.map((studentData) => {
-      const student = Object.create(Student);
-      student.firstname = capitalizeFirstLetter(studentData.fullname.trim().split(" ")[0]);
-      student.lastname = capitalizeFirstLetter(studentData.fullname.trim().split(" ").slice(1).join(" ") || "");
-      student.house = capitalizeFirstLetter(studentData.house.trim());
-      return student;
-    });
+        const student = Object.create(Student);
+        const fullNameParts = studentData.fullname.trim().split(' ');
+        const firstName = capitalizeFirstLetter(fullNameParts[0]);
+        const lastName = fullNameParts.length > 1 ? capitalizeFirstLetter(fullNameParts[fullNameParts.length - 1].replace(/["']/g, '')) : '';
+        const house = capitalizeFirstLetter(studentData.house.trim());
+        student.firstname = firstName;
+        student.lastname = lastName;
+        student.house = house;
+        student.nicknames = findNicknames(studentData.fullname);
+        return student;
+      });
+      
+         
     filteredStudents = [...allStudents]; // Initially, set filtered students as all students
     displayData(filteredStudents);
   } catch (error) {
     console.error("An error occurred while fetching the data:", error);
   }
 }
+
+function findNicknames(fullname) {
+    const nameParts = fullname.trim().split('"');
+    if (nameParts.length > 1) {
+      const nicknames = nameParts.slice(1, -1).map(nickname => {
+        const capitalizedNickname = capitalizeFirstLetter(nickname.trim());
+        return capitalizedNickname;
+      });
+      return nicknames;
+    }
+    return []; // Empty array if no nicknames found
+  }
+  
 
 function capitalizeFirstLetter(string) {
   if (string) {
@@ -85,7 +103,7 @@ function displayData(students) {
   
     const tableHeader = document.createElement("thead");
     const headerRow = document.createElement("tr");
-    headerRow.innerHTML = `<th onclick="sortData('firstname')">First Name</th><th onclick="sortData('lastname')">Last Name</th><th onclick="sortData('house')">House</th>`;
+    headerRow.innerHTML = `<th onclick="sortData('firstname')">First Name</th><th onclick="sortData('lastname')">Last Name</th><th onclick="sortData('house')">House</th><th onclick="sortData('nicknames')">Nicknames</th>`; // Add new column header
     tableHeader.appendChild(headerRow);
     tableElement.appendChild(tableHeader);
   
@@ -95,20 +113,17 @@ function displayData(students) {
       const firstNameCell = document.createElement("td");
       const lastNameCell = document.createElement("td");
       const houseCell = document.createElement("td");
+      const nicknamesCell = document.createElement("td"); // Create new cell for nicknames
   
       firstNameCell.textContent = student.firstname;
-  
-      if (student.nickname && student.nickname !== '""') {
-        lastNameCell.textContent = "";
-      } else {
-        lastNameCell.textContent = student.lastname;
-      }
-  
+      lastNameCell.textContent = student.lastname;
       houseCell.textContent = student.house;
+      nicknamesCell.textContent = student.nicknames.join(", "); // Display nicknames as comma-separated string
   
       row.appendChild(firstNameCell);
       row.appendChild(lastNameCell);
       row.appendChild(houseCell);
+      row.appendChild(nicknamesCell); // Add nicknames cell to the row
   
       tableBody.appendChild(row);
     });
@@ -116,12 +131,5 @@ function displayData(students) {
     tableElement.appendChild(tableBody);
   }
   
-  
-  
-  
-  
-  
 
 fetchData();
-
-

@@ -10,17 +10,22 @@
 <body>
 
     <h1>List of Students</h1>
+    <input type="text" id="search-input" placeholder="Search by first name or last name">
 
-    <input type="text" id="search-input" placeholder="Search by name" oninput="handleSearch()">
+    <button onclick="resetFilterAndSort()">Reset</button>
 
-</table>
+
+    <button onclick="filterByHouse('Gryffindor')">Gryffindor</button>
+    <button onclick="filterByHouse('Hufflepuff')">Hufflepuff</button>
+    <button onclick="filterByHouse('Ravenclaw')">Ravenclaw</button>
+    <button onclick="filterByHouse('Slytherin')">Slytherin</button>
 
     <table id="student-table"></table>
 
-    
   
-
-
     <script src="js.js"></script>
+
+
+
 </body>
 </html>
