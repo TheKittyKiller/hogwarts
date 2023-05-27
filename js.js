@@ -69,6 +69,8 @@ const Student = {
 
 let cleanedData = [];
 
+
+
 async function cleanData() {
   try {
     const response = await fetch(url);
@@ -106,12 +108,18 @@ async function cleanData() {
   }
 }
 
+
+
+//captalsing names 
 function capitalizeFirstLetter(string) {
   if (string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   }
   return "";
 }
+
+
+//putting the list on html
 
 function displayData(students) {
   const listElement = document.getElementById("student-list");
@@ -129,6 +137,9 @@ function displayData(students) {
     listElement.appendChild(listItem);
   });
 }
+
+
+//sorting the data
 
 function sortDataByFirstName() {
   cleanedData.sort((a, b) => a.firstname.localeCompare(b.firstname));
