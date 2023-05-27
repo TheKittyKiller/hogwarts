@@ -52,8 +52,6 @@ function prepareObject(jsonObject) {
     const fullname = jsonObject.fullname.trimStart().toLowerCase();
 
 
-
-
     const firstSpace = fullname.indexOf(" ");
     const secondSpace = fullname.indexOf(" ", firstSpace +1);
     const lastSpace = fullname.lastIndexOf(" ");
