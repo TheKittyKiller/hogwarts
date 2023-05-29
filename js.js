@@ -4,11 +4,13 @@ const url = "https://petlatkea.dk/2021/hogwarts/students.json";
 
 const Student = {
   firstname: "",
-  middlename: "", // New property
+  middlename: "",
   lastname: "",
   house: "",
-  expelled: false, // New property
+  expelled: false,
+  prefect: false, 
 };
+
 
 let allStudents = [];
 let filteredStudents = [];
@@ -19,6 +21,12 @@ let currentSort = {
 
 let expelledStudents = [];
 
+const houses = {
+  Gryffindor: 0,
+  Hufflepuff: 0,
+  Ravenclaw: 0,
+  Slytherin: 0
+};
 
 async function fetchData() {
   try {
@@ -109,6 +117,7 @@ function sortData(key) {
 
   displayData(sortedData);
 }
+
 
 
 function resetFilterAndSort() {
@@ -232,6 +241,19 @@ function showStudentDetails(student) {
   expelledElement.textContent = `Expelled: ${student.expelled ? "Yes" : "No"}`;
   studentInfoContainer.appendChild(expelledElement);
 
+// Create the prefect status element
+const prefectElement = document.createElement("p");
+prefectElement.textContent = `Prefect: ${student.prefect ? "Yes" : "No"}`; // Add prefect status
+studentInfoContainer.appendChild(prefectElement);
+
+
+// Create the toggle prefect button
+const prefectButton = document.createElement("button");
+prefectButton.textContent = student.prefect ? "Remove Prefect" : "Make Prefect";
+prefectButton.addEventListener("click", () => togglePrefectStatus(student)); // Add event listener
+studentInfoContainer.appendChild(prefectButton);
+
+
   // Append the student information container to the pop-up content
   popupContent.appendChild(studentInfoContainer);
 
@@ -247,6 +269,30 @@ function showStudentDetails(student) {
       document.body.removeChild(popupContainer);
     }
   });
+}
+
+function togglePrefectStatus(student) {
+  if (student.prefect) {
+    student.prefect = false;
+    houses[student.house]--;
+  } else {
+    // Check if there are already two prefects from the student's house
+    if (houses[student.house] >= 2) {
+      alert("There can only be two prefects from each house.");
+      return;
+    }
+    student.prefect = true;
+    houses[student.house]++;
+  }
+
+  const prefectButton = document.querySelector(".student-info button");
+  if (student.prefect) {
+    prefectButton.textContent = "Remove Prefect";
+  } else {
+    prefectButton.textContent = "Make Prefect";
+  }
+
+  displayPrefects(); // Update the prefect list
 }
 
 
@@ -309,12 +355,14 @@ function expelStudent(firstName, lastName) {
   if (studentIndex !== -1) {
     const expelledStudent = filteredStudents.splice(studentIndex, 1)[0];
     expelledStudent.expelled = true;
+    expelledStudent.prefect = false; // Remove prefect status
     expelledStudents.push(expelledStudent);
     displayData(filteredStudents);
     displayExpelledStudents();
     removeRowEventListener(expelledStudent);
   }
 }
+
 
 function removeRowEventListener(student) {
   const tableRows = document.getElementsByTagName("tr");
@@ -328,6 +376,19 @@ function removeRowEventListener(student) {
   }
 }
 
+
+function displayPrefects() {
+  const prefectList = document.getElementById("prefect-list");
+  prefectList.innerHTML = ""; // Clear previous data
+
+  const prefects = filteredStudents.filter((student) => student.prefect);
+
+  prefects.forEach((prefect) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = `${prefect.firstname} ${prefect.lastname}`;
+    prefectList.appendChild(listItem);
+  });
+}
 
 
 function countStudentsByHouse(students) {
@@ -353,3 +414,4 @@ function formatHouseCounts(houseCounts) {
 
 // Fetch data and display it
 fetchData();
+displayPrefects();
