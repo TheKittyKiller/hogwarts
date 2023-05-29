@@ -227,6 +227,11 @@ function showStudentDetails(student) {
   houseElement.textContent = `House: ${student.house}`;
   studentInfoContainer.appendChild(houseElement);
 
+  // Create the expelled status element
+  const expelledElement = document.createElement("p");
+  expelledElement.textContent = `Expelled: ${student.expelled ? "Yes" : "No"}`;
+  studentInfoContainer.appendChild(expelledElement);
+
   // Append the student information container to the pop-up content
   popupContent.appendChild(studentInfoContainer);
 
@@ -252,7 +257,7 @@ function displayExpelledStudents() {
 
   const tableHeader = document.createElement("thead");
   const headerRow = document.createElement("tr");
-  headerRow.innerHTML = `<th>First Name</th><th>Last Name</th><th>House</th><th>Expelled</th><th>Image</th>`; // Update column headers
+  headerRow.innerHTML = `<th>First Name</th><th>Last Name</th><th>House</th><th>Image</th>`; // Update column headers
   tableHeader.appendChild(headerRow);
   tableElement.appendChild(tableHeader);
 
@@ -262,13 +267,11 @@ function displayExpelledStudents() {
     const firstNameCell = document.createElement("td");
     const lastNameCell = document.createElement("td");
     const houseCell = document.createElement("td");
-    const expelledCell = document.createElement("td"); // Create new cell for expelled status
     const imageCell = document.createElement("td");
 
     firstNameCell.textContent = student.firstname;
     lastNameCell.textContent = student.lastname;
     houseCell.textContent = student.house;
-    expelledCell.textContent = "Yes"; // Display expelled status
     const image = document.createElement("img");
     let imageName;
     if (expelledStudents.filter((s) => s.lastname === student.lastname).length > 1) {
@@ -288,9 +291,9 @@ function displayExpelledStudents() {
     row.appendChild(firstNameCell);
     row.appendChild(lastNameCell);
     row.appendChild(houseCell);
-    row.appendChild(expelledCell);
     row.appendChild(imageCell);
 
+    row.addEventListener("click", () => showStudentDetails(student)); // Add event listener to show details
     tableBody.appendChild(row);
   });
 
