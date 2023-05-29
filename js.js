@@ -137,7 +137,17 @@ function displayData(students) {
 
     // Create and append the image element
     const image = document.createElement("img");
-    const imageName = `${student.lastname.toLowerCase()}_${student.firstname.charAt(0).toLowerCase()}.png`;
+    let imageName;
+    if (students.filter((s) => s.lastname === student.lastname).length > 1) {
+      imageName = `${student.lastname.toLowerCase()}_${student.firstname.toLowerCase()}.png`;
+    } else {
+      const lastNameParts = student.lastname.toLowerCase().split("-");
+      if (lastNameParts.length > 1) {
+        imageName = `${lastNameParts[lastNameParts.length - 1]}_${student.firstname.toLowerCase().charAt(0)}.png`;
+      } else {
+        imageName = `${student.lastname.toLowerCase()}_${student.firstname.toLowerCase().charAt(0)}.png`;
+      }
+    }
     image.src = `images/${imageName}`;
     image.alt = `${student.firstname} ${student.lastname}`;
     imageCell.appendChild(image);
@@ -162,6 +172,8 @@ function displayData(students) {
   houseCountElement.textContent = `Number of students in each house: ${formatHouseCounts(houseCounts)}`;
   displayedCountElement.textContent = `Number of students currently displayed: ${displayedCount}`;
 }
+
+
 
   
   function countStudentsByHouse(students) {
