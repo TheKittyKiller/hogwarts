@@ -9,6 +9,8 @@ const Student = {
   house: "",
   expelled: false,
   prefect: false, 
+  squad: false,
+  bloodStatus: "",
 };
 
 
@@ -30,6 +32,7 @@ const houses = {
 
 let bloodStatusData = [];
 
+let inquisitorialSquad = [];
 
 async function fetchData() {
   try {
@@ -270,6 +273,25 @@ studentInfoContainer.appendChild(prefectElement);
   bloodStatusElement.textContent = `Blood Status: ${bloodStatus}`;
   studentInfoContainer.appendChild(bloodStatusElement);
 
+  // Create the squad status element
+  const squadElement = document.createElement("p");
+  squadElement.textContent = `Inquisitorial Squad: ${student.squad ? "Yes" : "No"}`;
+  studentInfoContainer.appendChild(squadElement);
+
+  // Create the squad toggle button
+  const squadToggleButton = document.createElement("button");
+  
+  if ((student.bloodStatus === "pure-blood" || student.house === "Slytherin") && !student.expelled) {
+    squadToggleButton.textContent = student.squad ? "Remove from Squad" : "Add to Squad";
+    squadToggleButton.addEventListener("click", () => toggleSquadStatus(student));
+  } else {
+    squadToggleButton.textContent = "Ineligible for Squad";
+    squadToggleButton.disabled = true;
+  }
+
+  studentInfoContainer.appendChild(squadToggleButton);
+
+
 
 // Create the toggle prefect button
 const prefectButton = document.createElement("button");
@@ -293,6 +315,7 @@ studentInfoContainer.appendChild(prefectButton);
       document.body.removeChild(popupContainer);
     }
   });
+  
 }
 
 function togglePrefectStatus(student) {
@@ -320,6 +343,35 @@ function togglePrefectStatus(student) {
 }
 
 
+function toggleSquadStatus(student) {
+  if ((student.bloodStatus === "pure-blood" || student.house === "Slytherin") && !student.expelled) {
+    student.squad = !student.squad;
+
+    if (student.squad) {
+      inquisitorialSquad.push(student);
+    } else {
+      const index = inquisitorialSquad.findIndex((s) => s === student);
+      if (index !== -1) {
+        inquisitorialSquad.splice(index, 1);
+      }
+    }
+  }
+
+  displaySquad(); // Update the squad list
+}
+
+// Function to display the Inquisitorial Squad list
+function displaySquad() {
+  const squadList = document.getElementById("inquisitorial-squad");
+  squadList.innerHTML = ""; // Clear previous data
+
+  inquisitorialSquad.forEach((student) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = `${student.firstname} ${student.lastname}`;
+    squadList.appendChild(listItem);
+  });
+}
+
 function getBloodStatus(lastname) {
   const pureBlood = bloodStatusData.pure;
   const halfBlood = bloodStatusData.half;
@@ -329,7 +381,7 @@ function getBloodStatus(lastname) {
   } else if (halfBlood.includes(lastname)) {
     return "Half Blood";
   } else {
-    return "Unknown";
+    return "muggle";
   }
 }
 
