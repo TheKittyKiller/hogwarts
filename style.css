@@ -44,3 +44,10 @@ table {
     margin-bottom: 10px;
   }
   
+
+
+  .student-image {
+    width: 100px; /* Adjust the width and height as per your preference */
+    height: 100px;
+  }
+  

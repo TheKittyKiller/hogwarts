@@ -1,5 +1,7 @@
 "use strict";
 
+
+
 const url = "https://petlatkea.dk/2021/hogwarts/students.json";
 
 const Student = {
@@ -33,6 +35,11 @@ const houses = {
 let bloodStatusData = [];
 
 let inquisitorialSquad = [];
+
+let isHacked = false;
+
+const bloodStatusOptions = ["Pure-blood", "Half-blood", "Muggle-born"];
+
 
 async function fetchData() {
   try {
@@ -90,6 +97,57 @@ function findNicknames(fullname) {
 
 
 
+function hackTheSystem() {
+  if (isHacked) {
+    console.log("The system has already been hacked.");
+    return;
+  }
+  const sebastian = Object.create(Student);
+  sebastian.firstname = "Sebastian";
+  sebastian.lastname = "Melph";
+  sebastian.house = "Gryffindor";
+  sebastian.nicknames = [];
+
+  const image = document.createElement("img");
+  image.src = "images/seb.jpg";
+  image.alt = "Sebastian Melph";
+  image.classList.add("student-image");
+
+  const row = document.createElement("tr");
+  const firstNameCell = document.createElement("td");
+  const lastNameCell = document.createElement("td");
+  const houseCell = document.createElement("td");
+  const nicknamesCell = document.createElement("td");
+  const imageCell = document.createElement("td");
+
+  firstNameCell.textContent = sebastian.firstname;
+  lastNameCell.textContent = sebastian.lastname;
+  houseCell.textContent = sebastian.house;
+  nicknamesCell.textContent = sebastian.nicknames.join(", ");
+  imageCell.appendChild(image);
+
+  row.appendChild(firstNameCell);
+  row.appendChild(lastNameCell);
+  row.appendChild(houseCell);
+  row.appendChild(nicknamesCell);
+  row.appendChild(imageCell);
+
+  const tableBody = document.querySelector("#student-table tbody");
+  tableBody.appendChild(row);
+  
+  const bloodStatus = getRandomBloodStatus();
+  sebastian.bloodStatus = bloodStatus;
+
+  isHacked = true; // Set the flag to true after hacking the system
+  console.log("Sebastian Melph has been injected into the list of students.");
+
+}
+
+
+function getRandomBloodStatus() {
+  const randomIndex = Math.floor(Math.random() * bloodStatusOptions.length);
+  return bloodStatusOptions[randomIndex];
+}
 
 
 function handleSearch() {
@@ -344,16 +402,14 @@ function togglePrefectStatus(student) {
 
 
 function toggleSquadStatus(student) {
-  if ((student.bloodStatus === "pure-blood" || student.house === "Slytherin") && !student.expelled) {
-    student.squad = !student.squad;
+  student.squad = !student.squad;
 
-    if (student.squad) {
-      inquisitorialSquad.push(student);
-    } else {
-      const index = inquisitorialSquad.findIndex((s) => s === student);
-      if (index !== -1) {
-        inquisitorialSquad.splice(index, 1);
-      }
+  if (student.squad) {
+    inquisitorialSquad.push(student);
+  } else {
+    const index = inquisitorialSquad.findIndex((s) => s === student);
+    if (index !== -1) {
+      inquisitorialSquad.splice(index, 1);
     }
   }
 
@@ -501,5 +557,6 @@ function formatHouseCounts(houseCounts) {
 }
 
 // Fetch data and display it
+
 fetchData();
 displayPrefects();
