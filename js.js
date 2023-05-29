@@ -112,47 +112,57 @@ function resetFilterAndSort() {
 }
 
 function displayData(students) {
-    const tableElement = document.getElementById("student-table");
-    tableElement.innerHTML = ""; // Clear previous data
-  
-    const tableHeader = document.createElement("thead");
-    const headerRow = document.createElement("tr");
-    headerRow.innerHTML = `<th onclick="sortData('firstname')">First Name</th><th onclick="sortData('lastname')">Last Name</th><th onclick="sortData('house')">House</th><th onclick="sortData('nicknames')">Nicknames</th>`; // Add new column header
-    tableHeader.appendChild(headerRow);
-    tableElement.appendChild(tableHeader);
-  
-    const tableBody = document.createElement("tbody");
-    students.forEach((student) => {
-      const row = document.createElement("tr");
-      const firstNameCell = document.createElement("td");
-      const lastNameCell = document.createElement("td");
-      const houseCell = document.createElement("td");
-      const nicknamesCell = document.createElement("td"); // Create new cell for nicknames
-  
-      firstNameCell.textContent = student.firstname;
-      lastNameCell.textContent = student.lastname;
-      houseCell.textContent = student.house;
-      nicknamesCell.textContent = student.nicknames.join(", "); // Display nicknames as comma-separated string
-  
-      row.appendChild(firstNameCell);
-      row.appendChild(lastNameCell);
-      row.appendChild(houseCell);
-      row.appendChild(nicknamesCell); // Add nicknames cell to the row
-  
-      tableBody.appendChild(row);
-    });
-  
-    tableElement.appendChild(tableBody);
-  
-    // Update the count information
-    const houseCountElement = document.getElementById("house-count");
-    const displayedCountElement = document.getElementById("displayed-count");
-    const houseCounts = countStudentsByHouse(allStudents);
-    const displayedCount = students.length;
-  
-    houseCountElement.textContent = `Number of students in each house: ${formatHouseCounts(houseCounts)}`;
-    displayedCountElement.textContent = `Number of students currently displayed: ${displayedCount}`;
-  }
+  const tableElement = document.getElementById("student-table");
+  tableElement.innerHTML = ""; // Clear previous data
+
+  const tableHeader = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  headerRow.innerHTML = `<th onclick="sortData('firstname')">First Name</th><th onclick="sortData('lastname')">Last Name</th><th onclick="sortData('house')">House</th><th onclick="sortData('nicknames')">Nicknames</th><th>Image</th>`; // Add new column header for image
+  tableHeader.appendChild(headerRow);
+  tableElement.appendChild(tableHeader);
+
+  const tableBody = document.createElement("tbody");
+  students.forEach((student) => {
+    const row = document.createElement("tr");
+    const firstNameCell = document.createElement("td");
+    const lastNameCell = document.createElement("td");
+    const houseCell = document.createElement("td");
+    const nicknamesCell = document.createElement("td");
+    const imageCell = document.createElement("td"); // Create new cell for image
+
+    firstNameCell.textContent = student.firstname;
+    lastNameCell.textContent = student.lastname;
+    houseCell.textContent = student.house;
+    nicknamesCell.textContent = student.nicknames.join(", ");
+
+    // Create and append the image element
+    const image = document.createElement("img");
+    const imageName = `${student.lastname.toLowerCase()}_${student.firstname.charAt(0).toLowerCase()}.png`;
+    image.src = `images/${imageName}`;
+    image.alt = `${student.firstname} ${student.lastname}`;
+    imageCell.appendChild(image);
+
+    row.appendChild(firstNameCell);
+    row.appendChild(lastNameCell);
+    row.appendChild(houseCell);
+    row.appendChild(nicknamesCell);
+    row.appendChild(imageCell); // Add image cell to the row
+
+    tableBody.appendChild(row);
+  });
+
+  tableElement.appendChild(tableBody);
+
+  // Update the count information
+  const houseCountElement = document.getElementById("house-count");
+  const displayedCountElement = document.getElementById("displayed-count");
+  const houseCounts = countStudentsByHouse(allStudents);
+  const displayedCount = students.length;
+
+  houseCountElement.textContent = `Number of students in each house: ${formatHouseCounts(houseCounts)}`;
+  displayedCountElement.textContent = `Number of students currently displayed: ${displayedCount}`;
+}
+
   
   function countStudentsByHouse(students) {
     const houseCounts = {
