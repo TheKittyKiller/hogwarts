@@ -28,11 +28,20 @@ const houses = {
   Slytherin: 0
 };
 
+let bloodStatusData = [];
+
+
 async function fetchData() {
   try {
-    const response = await fetch(url);
-    const jsonData = await response.json();
-    allStudents = jsonData.map((studentData) => {
+    const [studentsResponse, bloodStatusResponse] = await Promise.all([
+      fetch(url),
+      fetch("https://petlatkea.dk/2021/hogwarts/families.json")
+    ]);
+
+    const studentsJson = await studentsResponse.json();
+    const bloodStatusJson = await bloodStatusResponse.json();
+
+    allStudents = studentsJson.map((studentData) => {
       const student = Object.create(Student);
       const fullNameParts = studentData.fullname.trim().split(" ");
 
@@ -51,10 +60,18 @@ async function fetchData() {
 
     filteredStudents = [...allStudents];
     displayData(filteredStudents);
+
+    bloodStatusData = bloodStatusJson;
+
   } catch (error) {
-    console.error("An error occurred while fetching the data:", error);
+    console.error("An error occurred while fetching the data fam:", error);
   }
 }
+
+
+const searchInput = document.getElementById("search-input");
+searchInput.addEventListener("input", handleSearch);
+
 
 function findNicknames(fullname) {
   const nameParts = fullname.trim().split('"');
@@ -68,8 +85,9 @@ function findNicknames(fullname) {
   return []; // Empty array if no nicknames found
 }
 
-const searchInput = document.getElementById("search-input");
-searchInput.addEventListener("input", handleSearch);
+
+
+
 
 function handleSearch() {
   const searchQuery = searchInput.value.toLowerCase().trim();
@@ -246,6 +264,12 @@ const prefectElement = document.createElement("p");
 prefectElement.textContent = `Prefect: ${student.prefect ? "Yes" : "No"}`; // Add prefect status
 studentInfoContainer.appendChild(prefectElement);
 
+// Create the blood status element
+  const bloodStatusElement = document.createElement("p");
+  const bloodStatus = getBloodStatus(student.lastname);
+  bloodStatusElement.textContent = `Blood Status: ${bloodStatus}`;
+  studentInfoContainer.appendChild(bloodStatusElement);
+
 
 // Create the toggle prefect button
 const prefectButton = document.createElement("button");
@@ -296,6 +320,18 @@ function togglePrefectStatus(student) {
 }
 
 
+function getBloodStatus(lastname) {
+  const pureBlood = bloodStatusData.pure;
+  const halfBlood = bloodStatusData.half;
+
+  if (pureBlood.includes(lastname)) {
+    return "Pure Blood";
+  } else if (halfBlood.includes(lastname)) {
+    return "Half Blood";
+  } else {
+    return "Unknown";
+  }
+}
 
 function displayExpelledStudents() {
   const tableElement = document.getElementById("expelled-table");
