@@ -41,6 +41,8 @@ async function fetchData() {
   }
 }
 
+
+
 function findNicknames(fullname) {
     const nameParts = fullname.trim().split('"');
     if (nameParts.length > 1) {
